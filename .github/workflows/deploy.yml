@@ -1,0 +1,46 @@
+name: Deploy to AWS
+on:
+    pull_request:
+      types: [closed]
+      branches: 
+        - main
+        - test
+
+env:
+    TF_LOG: INFO
+    AWS_REGION: ${{ secrets[format('{0}_AWS_REGION', github.ref_name)] }}
+    AWS_ACCESS_KEY_ID: ${{ secrets[format('{0}_AWS_ACCESS_KEY_ID', github.ref_name)] }}
+    AWS_SECRET_ACCESS_KEY: ${{ secrets[format('{0}_AWS_ACCESS_KEY_SECRET', github.ref_name)] }}
+   
+    # S3 bucket for the Terraform state
+    S3_BUCKET_TF_STATE: ${{ secrets[format('{0}_BUCKET_TF_STATE', github.ref_name)] }}
+    S3_KEY_TF_STATE: ${{ secrets[format('{0}_KEY_TF_STATE', github.ref_name)] }}
+    GITHUB_TOKEN: ${{ github.token }}
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.merged == true
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v3
+      with:
+        terraform_version: 1.6.6
+
+    - name: Terraform Init
+      run: | 
+        terraform init -backend-config="bucket=${{ env.S3_BUCKET_TF_STATE }}" \
+        -backend-config="key=${{ env.S3_KEY_TF_STATE }}" \
+        -backend-config="region=eu-west-1"
+
+    - name: Terraform Validate
+      run: terraform validate
+
+    - name: Terraform Plan
+      run: terraform plan -no-color -var-file env/variables.tfvars
+
+    - name: Terraform Apply
+      run: terraform apply -auto-approve -no-color -var-file env/variables.tfvars

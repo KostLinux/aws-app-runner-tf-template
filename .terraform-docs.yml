@@ -1,0 +1,212 @@
+formatter: "markdown table" # this is required
+
+version: ""
+
+header-from: main.tf
+footer-from: ""
+
+recursive:
+  enabled: false
+  path: modules
+
+sections:
+  hide: []
+  show: []
+    # - requirements
+    # - modules
+    # - resources
+    # - data-sources
+
+
+content: |-
+  {{ .Header }}
+  # Example AWS App Runner Terraform Template
+
+  A production-ready AWS App Runner repository template with Terraform.
+
+  Feel free to make a pull request or issue if you have any suggestions or improvements.
+  ## Features
+
+  - WAF Rate Limiting
+  - WAF IP Allow List
+  - IAM Service Account
+  - Automatic HTTPS with ACM + DNS Validation
+  - Custom Domain for AWS App Runner
+  - AWS App Runner Service
+  - Security Groups
+  - Makefile for faster development
+  - S3 Backend with encryption
+
+  ## Prerequisites
+
+  - [S3 Bucket configured](https://developer.hashicorp.com/terraform/language/settings/backends/s3)
+  - [ECR repository configured](https://docs.aws.amazon.com/AmazonECR/latest/userguide/what-is-ecr.html)
+  - Application image built and pushed to ECR
+  - [Route53 Domain Zone registered](https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/domain-register.html)
+  - Subnets contain tags for [data.aws_subnets.private](./data.tf)
+  - [TFLint](https://github.com/terraform-linters/tflint)
+  - [TFSec](https://github.com/aquasecurity/tfsec)
+  
+  ## Make functions available
+
+  - make deploy - Same as terraform apply
+  - make destroy - Same as terraform destroy
+  - make docs - Generates Readme documentation
+  - make format - Formates terraform files
+  - make init - Initialises terraform modules, providers and backend connection
+  - make plan - Same as terraform plan
+  - make validate - Validates terraform code quality and style
+  - make tfsec - Validate possible vulnerabilites in code
+  - make tflint - Validate terraform code style
+
+  ## Getting Started
+
+  Before we're going to deep dive, let's explain, why we need to separate variables.
+
+  There's some general variables that are getting changed continuously or are used in multiple files. These variables are located under env/variables.tfvars.example
+
+  Also terraform needs an connection with AWS and S3 Backend to store Terraform state. These variables are located under .env.example.
+
+  **1. Clone this repository**
+
+  ```
+  git clone git@github.com:KostLinux/aws-app-runner-tf-template.git & cd aws-app-runner-tf-template
+  ```
+
+  **2. Configure connection with AWS and S3 Backend via .env**
+
+  Configure connection with AWS and S3 Backend to store Terraform state.
+
+  ```
+  cp .env.example .env
+  ```
+
+  **3. Configure Terraform variables via terraform.tfvars**
+
+  ```
+  cp env/variables.tfvars.example env/variables.tfvars
+
+  vim env/variables.tfvars
+  ```
+
+  **4. Make necessary changes in other .tf files via IDE**
+
+  Due to template repository, .tf files contain placeholders that should be replaced with real values.
+
+  ```
+  # VsCode
+  code .
+
+  # Atom
+  atom .
+  ```
+
+  **5. Validate code**
+  
+  ```
+  make validate
+  ```
+  
+  **6. Initialize Terraform**
+
+  ```
+  make init
+  ```
+
+  **7. Make terraform plan file**
+
+  ```
+  make plan
+  ```
+
+  **8. Apply changes**
+
+  ```
+  make apply
+  ```
+
+  **9. Push changes to git**
+
+  ## Setting up pipeline
+
+  This repository contains workflow of feature-branches, when PR is merged, github actions deploy changes to AWS.
+
+  **1. Configure secrets**
+
+  Configure secrets in Settings -> Secrets and Variables -> Actions -> Environment Secrets
+
+  - TEST_AWS_ACCESS_KEY_ID - AWS Access Key ID for testing environment
+  - TEST_AWS_SECRET_ACCESS_KEY - AWS Secret Access Key for testing environment
+  - TEST_AWS_REGION - AWS Region for testing environment
+  - TEST_BUCKET_TF_STATE - S3 Bucket for testing environment
+  - TEST_KEY_TF_STATE - S3 Key for testing environment
+
+  - MAIN_AWS_ACCESS_KEY_ID - AWS Access Key ID for production environment
+  - MAIN_AWS_SECRET_ACCESS_KEY - AWS Secret Access Key for production environment
+  - MAIN_AWS_REGION - AWS Region for production environment
+  - MAIN_BUCKET_TF_STATE - S3 Bucket for production environment
+  - MAIN_KEY_TF_STATE - S3 Key for production environment
+
+  **2. Create example branch & push changes**
+
+  ```
+  git checkout -b "test/try-pipeline"
+  git commit -m "Trigger a pipeline"
+  git push --set-upstream origin test/try-pipeline
+  ```
+
+  **3. Create PR, merge into test and look into Github Actions**
+
+  Enjoy!
+
+  ## License
+
+  This project is under [MIT License](./LICENSE.md)
+
+  ## Author
+
+  [KostLinux](https://github.com/KostLinux) - Getting Error after error :S
+
+  ______
+  ## Terraform Reference
+
+  Terraform reference shows all the providers and modules used in this repository
+
+  {{ .Content }}
+
+  ## Conclusion
+
+  This README is created via [terraform-docs](https://terraform-docs.io)
+
+  {{ .Footer }}
+
+output:
+  file: ""
+  mode: inject
+  template: |-
+    <!-- BEGIN_TF_DOCS -->
+    {{ .Content }}
+    <!-- END_TF_DOCS -->    
+
+output-values:
+  enabled: false
+  from: ""
+
+sort:
+  enabled: true
+  by: name
+
+settings:
+  anchor: true
+  color: true
+  default: true
+  description: true
+  escape: true
+  hide-empty: false
+  html: true
+  indent: 2
+  lockfile: true
+  read-comments: true
+  required: true
+  sensitive: false
+  type: true

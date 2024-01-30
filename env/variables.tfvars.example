@@ -1,0 +1,27 @@
+# Variables used to provision resources
+
+route53_domain="domain.com"
+
+app_sub_domain="hello-api"
+app_port="8080"
+app_repository="example-api"
+app_image_tag="latest"
+
+app_environment_variables = [
+    {
+        "name": "APP_PORT",
+        "value": app_port
+    },
+    {
+        "name": "APP_SUB_DOMAIN",
+        "value": app_sub_domain
+    },
+    {
+        "name": "APP_REPOSITORY",
+        "value": app_repository
+    },
+    {
+        "name": "APP_IMAGE_TAG",
+        "value": app_image_tag
+    }
+]

@@ -1,0 +1,44 @@
+run-name: Lint terraform by @${{ github.actor }}
+on:
+  pull_request:
+    branches:
+      - main
+      - test
+  push:
+    branches:
+      - 'feature/*'
+      - 'hotfix/*'
+      - 'bugfix/*'
+
+
+env:
+    TF_LOG: INFO
+    AWS_REGION: "eu-west-1"
+    AWS_ACCESS_KEY_ID: ${{ secrets[format('{0}_AWS_ACCESS_KEY_ID', github.ref_name)] }}
+    AWS_SECRET_ACCESS_KEY: ${{ secrets[format('{0}_AWS_ACCESS_KEY_SECRET', github.ref_name)] }}
+    GITHUB_TOKEN: ${{ github.token }}
+
+    
+jobs:
+    lint:
+        runs-on: ubuntu-latest
+        steps:
+        - uses: actions/checkout@v4
+
+        # Lint terraform with tflint
+        - name: Setup tflint
+          uses: terraform-linters/setup-tflint@v3
+          with:
+            tflint_version: v0.49.0
+
+        - name: Show version and init tflint
+          run: |
+            tflint -v
+            tflint --init
+
+        - name: Lint .tf files
+          run: tflint
+
+
+        - name: tfsec
+          uses: aquasecurity/tfsec-action@v1.0.3
