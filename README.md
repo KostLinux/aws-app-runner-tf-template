@@ -44,7 +44,20 @@ Before we're going to deep dive, let's explain, why we need to separate variable
 
 There's some general variables that are getting changed continuously or are used in multiple files. These variables are located under env/variables.tfvars.example
 
-Also terraform needs an connection with AWS and S3 Backend to store Terraform state. These variables are located under .env.example.
+Also terraform needs an connection with AWS and S3 Backend to store Terraform state. These variables are located under .env.example. The `S3_BUCKET_TF_STATE` and
+`S3_KEY_TF_STATE` environmentals are used **ONLY IN CASE OF GH Actions**.
+
+## Setting up Prerequisites
+
+To setup prerequisites, you can use cloudformation stack from [here](./cloudformation/prerequisites.yaml).
+
+Go to Cloudformation -> Stacks -> Create Stack -> Upload a template file -> prerequisites.yaml
+
+Under BucketName and RepositoryName, fill in the values and create the stack.
+
+As mentioned above, you need to upload some image to ECR registry. 
+
+You can use [this](https://github.com/KostLinux/example-go-web-app) for testing purposes.
 
 **1. Clone this repository**
 
@@ -52,9 +65,11 @@ Also terraform needs an connection with AWS and S3 Backend to store Terraform st
 git clone git@github.com:KostLinux/aws-app-runner-tf-template.git & cd aws-app-runner-tf-template
 ```
 
-**2. Configure connection with AWS and S3 Backend via .env**
+**2. Configure connection with AWS via .env**
 
-Configure connection with AWS and S3 Backend to store Terraform state.
+Configure connection with AWS to store Terraform state.
+
+***Note!*** `S3_BUCKET_TF_STATE` and `S3_KEY_TF_STATE` environmentals are used **Pipeline Only variables!**
 
 ```
 cp .env.example .env
@@ -80,6 +95,7 @@ code .
 atom .
 ```
 
+**NOTE!** Don't forget to 
 **5. Validate code**
 
 ```
@@ -162,7 +178,7 @@ Terraform reference shows all the providers and modules used in this repository
 
 | Name | Version |
 |------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | 5.34.0 |
+| <a name="provider_aws"></a> [aws](#provider\_aws) | >= 5.0 |
 
 ## Modules
 
@@ -219,5 +235,4 @@ Terraform reference shows all the providers and modules used in this repository
 ## Conclusion
 
 This README is created via [terraform-docs](https://terraform-docs.io)
-
 

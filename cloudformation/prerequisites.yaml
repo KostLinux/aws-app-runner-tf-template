@@ -1,0 +1,27 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Parameters:
+    BucketName:
+        Type: String
+        Description: Name of the S3 bucket
+    RepositoryName:
+        Type: String
+        Description: Name of the ECR repository
+Resources:
+    S3Bucket:
+        Type: AWS::S3::Bucket
+        Properties:
+            BucketName: !Ref BucketName
+    ECRRepository:
+        Type: AWS::ECR::Repository
+        Properties:
+            RepositoryName: !Ref RepositoryName
+            RepositoryPolicyText:
+                Version: '2012-10-17'
+                Statement:
+                    - Sid: AllowPublicPull
+                      Effect: Allow
+                      Principal: '*'
+                      Action:
+                          - 'ecr:GetDownloadUrlForLayer'
+                          - 'ecr:BatchGetImage'
+                          - 'ecr:BatchCheckLayerAvailability'
