@@ -76,6 +76,19 @@ content: |-
 
   Under BucketName and RepositoryName, fill in the values and create the stack.
 
+  Unfortunately, AWS CloudFormation does not support tagging default VPCs and subnets. You need to do it manually.
+
+  VPC tab could be found [here](https://eu-west-1.console.aws.amazon.com/vpcconsole/home?region=eu-west-1#vpcs:)
+  Subnets tab could be found [here](https://eu-west-1.console.aws.amazon.com/vpcconsole/home?region=eu-west-1#subnets:)
+
+  ```
+  # Add tag to default VPC
+  aws ec2 create-tags --resources <vpc-id> --tags Key=Name,Value=default
+
+  # Add tag to default Subnets
+  aws ec2 create-tags --resources <subnet-id> --tags Key=Type,Value=Private
+  ```
+
   As mentioned above, you need to upload some image to ECR registry. 
   
   You can use [this](https://github.com/KostLinux/example-go-web-app) for testing purposes.
@@ -106,7 +119,9 @@ content: |-
 
   **4. Make necessary changes in other .tf files via IDE**
 
-  Due to template repository, .tf files contain placeholders that should be replaced with real values.
+  Due to template repository, .tf files contain examples that should be replaced with real values.
+
+  `security_groups.tf` & `waf.tf` - "1.1.1.1/32" must be changed.
 
   ```
   # VsCode
@@ -182,6 +197,23 @@ content: |-
   ## Author
 
   [KostLinux](https://github.com/KostLinux) - Getting Error after error :S
+
+  ## Errors & Issues
+
+  1. IAM Service Account error
+
+  In case of IAM Service Account Error, just start the terraform apply again.
+
+  ```
+  ╷
+  │ Error: creating App Runner Service (example_laravel_app): operation error AppRunner: CreateService, https response error StatusCode: 400, RequestID: 36cb0cc6-0c00-454c-9fbf-5035f94614cd, InvalidRequestException: Error in assuming access role arn:aws:iam::058264387177:role/example_application_service_account
+  │ 
+  │   with module.example_app_runner.aws_apprunner_service.this[0],
+  │   on .terraform/modules/example_app_runner/main.tf line 34, in resource "aws_apprunner_service" "this":
+  │   34: resource "aws_apprunner_service" "this" {
+  │ 
+  ╵
+  ```
 
   ______
   ## Terraform Reference

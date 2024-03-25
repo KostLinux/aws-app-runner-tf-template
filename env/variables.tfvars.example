@@ -10,18 +10,12 @@ app_image_tag="latest"
 app_environment_variables = [
     {
         "name": "APP_PORT",
+        "description": "Application Port",
         "value": app_port
     },
     {
-        "name": "APP_SUB_DOMAIN",
-        "value": app_sub_domain
-    },
-    {
-        "name": "APP_REPOSITORY",
-        "value": app_repository
-    },
-    {
-        "name": "APP_IMAGE_TAG",
-        "value": app_image_tag
+        "name": "API_PATH",
+        "description": "Application API Path",
+        "value": "/api/v1"
     }
 ]
