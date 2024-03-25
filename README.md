@@ -55,19 +55,6 @@ Go to Cloudformation -> Stacks -> Create Stack -> Upload a template file -> prer
 
 Under BucketName and RepositoryName, fill in the values and create the stack.
 
-Unfortunately, AWS CloudFormation does not support tagging default VPCs and subnets. You need to do it manually.
-
-VPC tab could be found [here](https://eu-west-1.console.aws.amazon.com/vpcconsole/home?region=eu-west-1#vpcs:)
-Subnets tab could be found [here](https://eu-west-1.console.aws.amazon.com/vpcconsole/home?region=eu-west-1#subnets:)
-
-```
-# Add tag to default VPC
-aws ec2 create-tags --resources <vpc-id> --tags Key=Name,Value=default
-
-# Add tag to default Subnets
-aws ec2 create-tags --resources <subnet-id> --tags Key=Type,Value=Private
-```
-
 As mentioned above, you need to upload some image to ECR registry. 
 
 You can use [this](https://github.com/KostLinux/example-go-web-app) for testing purposes.
