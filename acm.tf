@@ -1,6 +1,6 @@
 module "acm" {
   source   = "terraform-aws-modules/acm/aws"
-  version  = "~> 4.0"
+  version  = "~> 5.0"
 
   
   # Domain Name from infra_variables.tfvars
