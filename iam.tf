@@ -2,7 +2,7 @@
 #tfsec:ignore:aws-iam-no-policy-wildcards
 module "iam_policy" {
   source = "terraform-aws-modules/iam/aws//modules/iam-policy"
-  version = "~> 5.47.1"
+  version = "~> 5.48.0"
 
   name        = "example-application-policy"
   path        = "/"
@@ -52,7 +52,7 @@ module "iam_policy" {
 
 module "application_service_account" {
   source        = "terraform-aws-modules/iam/aws//modules/iam-assumable-role"
-  version = "~> 5.47.1"
+  version = "~> 5.48.0"
 
   role_name          = "example_application_service_account"
   
